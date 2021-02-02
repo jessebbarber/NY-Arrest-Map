@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>New York County Arrest Rates</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+<script src="https://api.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.js"></script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.css" rel="stylesheet" />
+<style>
+    body { margin: 0; padding: 0; }
+    #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+        h4 {
+          font-size: 1em;
+          text-align: left;
+          line-height: 18px; 
+          padding-bottom: 5px;
+          margin-top: 0px;
+          margin-bottom: 5px;
+        }
+
+
+    #legend {
+          font-size: 14px;
+          padding: 10px;
+          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+          line-height: 12px;
+          right: 0px;
+          bottom: 0px;
+          margin-right: 20px;
+          margin-bottom: 30px;
+          width: 220px;
+          border-width: 1px;
+          border-style: solid;
+          border-color: rgb(0,0,0);
+          border-radius: 3px;
+        }
+
+
+    .map-overlay {
+          background: white;
+          position: absolute;
+          font-family: Helvetica, sans-serif;
+          overflow: hidden;
+          vertical-align: middle;
+    }
+
+
+    .map-overlay div span {
+          border-radius: 0px;
+          outline-style: solid;
+          outline-color: black;
+          outline-width: .5px;
+          display: inline-block;
+          height: 15px;
+          width: 15px;
+          margin-right: 10px;
+          margin-bottom: 4px;
+          vertical-align: middle;
+          font-size: 12px;
+        }
+
+    @media only screen and (max-width: 3000px) {
+    #features {
+          right: 0px;
+          padding: 0px 0px 0 10px;
+          top: 0px;
+          margin-right: 20px;
+          margin-top: 20px;
+          width: 240px;
+          border-width: 1px;
+          border-style: solid;
+          border-color: rgb(0,0,0);
+          border-radius: 3px;
+    }}
+
+    #features p {
+          font-size: 12px;
+          line-height: 12px;
+    }
+
+    @media only screen and (max-width: 750px) {
+    #features {
+          right: 0px;
+          top: 0px;
+          padding: 0px 0px 0 5px;
+          margin-right: 20px;
+          margin-top: 20px;
+          width: 150px;
+          border-width: 1px;
+          border-style: solid;
+          border-color: rgb(0,0,0);
+          border-radius: 3px;
+    }
+    h2{
+      font-size:16px;
+    }
+    p{
+      font-size:8px;
+      line-height: 12px;
+    }
+    h4{
+      font-size:14px;
+    }
+  }
+
+</style>
+</head>
+<body>
+<div id="map"></div>
+<div class='map-overlay' id='features'>
+  <h3>NY County Arrest Rates</h3>
+<div><p>Click on counties for information</p></div></div>
+
+
+<div class='map-overlay' id='legend'>
+  <h4><strong>Arrest Rates (per 1,000 people)</strong></h4>
+  <div><span style='background-color: #aed6f1;'></span>10 to 15 in 1,000</div>
+  <div><span style='background-color: #5dade2;'></span>15 to 20 in 1,000</div>
+  <div><span style='background-color: #2e86c1;'></span>20 to 25 in 1,000</div>
+  <div><span style='background-color: #21618c;'></span>25 to 30 in 1,000</div>
+</div>
+
+<script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoibnljbHUiLCJhIjoiY2tnbXExOW51MDBkbjJ0bW9kbnE2NHR5ciJ9.DAFSwJLcdQcfuHHuWVeWHA';
+    var map = new mapboxgl.Map({
+    container: 'map', // container id
+    style: 'mapbox://styles/nyclu/ckkof3db96mzo17lnzucvb12w', //hosted style id
+    center: [-74.391, 42.714], // starting position
+    zoom: 6,// starting zoom
+    maxZoom:8,
+    minZoom: 6
+    });
+
+
+    // When a click event occurs on a feature in the states layer, open a popup at the
+    // location of the click, with description HTML from its properties.
+    map.on('click', 'ArrestRate', function (e) {
+    new mapboxgl.Popup()
+    .setLngLat(e.lngLat)
+        .setHTML(
+        "<strong>"+e.features[0].properties.a1 + " County</strong><br>"+
+        "Total Arrest Rate: "+ e.features[0].properties.a7+ " in 1,000<br>"+
+        "White Arrest Rate: "+ e.features[0].properties.a8+ " in 1,000<br>"+
+        "Black Arrest Rate: "+ e.features[0].properties.a9+ " in 1,000<br>"+
+        "Latinx Arrest Rate: "+ e.features[0].properties.a10+ " in 1,000<br>"+
+        "Other Arrest Rate: "+ e.features[0].properties.a11+" in 1,000")
+    .addTo(map);
+    });
+     
+    // Change the cursor to a pointer when the mouse is over the states layer.
+    map.on('mouseenter', 'ArrestRate', function () {
+    map.getCanvas().style.cursor = 'pointer';
+    });
+     
+    // Change it back to a pointer when it leaves.
+    map.on('mouseleave', 'ArrestRate', function () {
+    map.getCanvas().style.cursor = '';
+    });
+
+</script>
+ 
+</body>
+</html>
